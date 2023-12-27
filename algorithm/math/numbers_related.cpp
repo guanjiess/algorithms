@@ -31,18 +31,20 @@ int LCM(int a, int b)
     return a / gcd * b;
 }
 
-int main()
-{
-    int test[10] = {2,4,3,18,5,-5,16,24,74,12};
-    for (int i = 0; i < 10; i +=2) {
-        int gcd = GCD_nr(test[i], test[i+1]);
-        printf("gcd_nr of %d, %d is: %d\n", test[i], test[i+1], gcd);
-    }
 
-    for (int i = 0; i < 10; i +=2) {
-        int lcm = LCM(test[i], test[i+1]);
-        printf("lcm of %d, %d is: %d\n", test[i], test[i+1],lcm); 
-    }
-
-    return 0;
-}
+// testings
+//int main()
+//{
+//    int test[10] = {2,4,3,18,5,-5,16,24,74,12};
+//    for (int i = 0; i < 10; i +=2) {
+//        int gcd = GCD_nr(test[i], test[i+1]);
+//        printf("gcd_nr of %d, %d is: %d\n", test[i], test[i+1], gcd);
+//    }
+//
+//    for (int i = 0; i < 10; i +=2) {
+//        int lcm = LCM(test[i], test[i+1]);
+//        printf("lcm of %d, %d is: %d\n", test[i], test[i+1],lcm); 
+//    }
+//
+//    return 0;
+//}
