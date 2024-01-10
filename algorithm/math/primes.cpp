@@ -92,6 +92,13 @@ void primes_m2n(int m, int n, int primes[])
     printf("\n");
 }
 
+// 质因子数据结构，包括质因子、质因子数量两个元素
+// 对int型
+struct prime_factor{
+    int factor;
+    int cnt;
+}factors[10];
+
 
 int main()
 {
