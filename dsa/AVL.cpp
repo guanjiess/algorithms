@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cstdio>
 #include <iterator>
+#include <queue>
 using namespace std;
 
 struct node{
@@ -71,7 +72,7 @@ void L(node* &root)
 }
 
 // 右旋操作是左旋的对称过程
-void R(node* root)
+void R(node* &root)
 {
     node* temp = root->left;
     root->left = temp->right;
@@ -117,8 +118,62 @@ void insert(node* &root, int x)
     }
 }
 
+void print_tree(node* root, int layer)
+{
+    if (root == NULL) {
+        return;
+    }
+    for (int i = 0; i < layer; i ++) {
+        printf(" ");
+    }
+    printf("%d\n", root->v);
+
+    print_tree(root->left, layer+1);
+    print_tree(root->right, layer+1);
+}
+
+//void print_tree2(node* root)
+//{
+//    queue<node*> q;
+//    q.push(root);
+//    while (!q.empty()) {
+//        node* temp = q.front();
+//        q.pop();
+//        printf("%d\n", temp->v);
+//        if(temp->left != NULL){
+//            q.push(temp->left);
+//        }
+//        if (temp->right != NULL) {
+//            q.push(temp->right);
+//        }
+//    }
+//}
+
 int main()
 {
+    node* root = newNode(0);
+    root->left = newNode(1);
+    root->right = newNode(2);
+    update_height(root);
+    root->right->left = newNode(3);
+    root->right->right = newNode(4);
+    update_height(root->left);
+    update_height(root->right);
+    update_height(root);
 
+    printf("------------initial tree------------\n");
+    print_tree(root, 1);
+    printf("\n");
+
+    printf("------------after Left rotate------------\n");
+    L(root);
+    print_tree(root, 1);
+    printf("\n");
+    
+    printf("------------after right rotate------------\n");
+    R(root);
+    print_tree(root, 1);
+    printf("\n");
+    
     return 0;
 }
