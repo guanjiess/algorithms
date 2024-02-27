@@ -12,6 +12,7 @@ struct node{
     int dis;
 };
 
+// prim算法
 // 目的是求解最小生成树，minimum spanning tree, 即给定一个无向图结构，生成一棵包含
 // 该图结构所有顶点的树，这个树的边均是无向图的边，且满足这些边权之和最短。
 // 注意：树有n个顶点，则有n-1条边。
@@ -55,6 +56,92 @@ int prim(int start, int size)
     return answer;
 }
 
+// kruskal算法需要的子功能
+const int MAXE = 999;
+const int MAXV = 110;
+struct edge{
+    int u,v;
+    int cost;
+}E[MAXE];
+
+void p_E(int size)
+{
+    for (int i = 0; i < size; i++){
+        printf("edge_%d: %d<--->%d, %d\n",i, E[i].u, E[i].v, E[i].cost);
+    }
+}
+
+bool cmp(edge a, edge b)
+{
+    return a.cost < b.cost;
+}
+
+int father[MAXV];
+void set_father(int size)
+{
+    for (int i = 0; i < size; i++) {
+        father[i] = i;
+    }
+}
+
+void print_father(int size)
+{
+    for (int i = 0; i < size; i++) {
+        printf("%d ", father[i]);
+    }
+    printf("\n");
+}
+
+int find_father(int x)
+{
+    int ans = x;
+    while (ans != father[ans]) {
+        ans = father[ans];
+    }
+
+    // 路径压缩部分
+    int y = x;
+    while (y != father[y]) {
+        int y_tmp = y;
+        y = father[y_tmp];
+        father[y_tmp] = ans;
+    }
+    return ans;
+}
+
+// 目的：给定边和边权，求得最小生成树，即找出n-1条边，使得这n-1条边在包括全部n个顶点，同时这n-1条边的权值之和是最小的
+// kruskal算法的主要思想：将所有未选中的边按照边权从小到大排列，依次选出最短的边以使得总权值最小。
+// 1、将所有未选中的边按照边权从小到大排列，并选出边权最小的边
+// 2、如果这条边的两个顶点处在不同的连通块上，将这条边加入最小生成树中
+// 3、处在相同的连通块上，该条边不予处理，回到步骤1
+// 4、执行上述循环到最小生成树的边数为n-1为止
+int kruskal(int n, int m)
+{
+    int ans = 0;
+    int edge_num = 0;
+    set_father(n);
+    sort(E, E+m, cmp);
+    //p_E(m);
+    for (int i = 0; i < m; i++) {
+        int father_u = find_father(E[i].u);
+        int father_v = find_father(E[i].v);
+        if (father_u != father_v){
+            edge_num ++;
+            ans += E[i].cost;
+            // 关键的一点，合并连通块，即把二者的父节点统一
+            father[father_v] = father_u;
+            if (edge_num == n - 1) {
+                break;
+            }
+        }
+    }
+    // 遍历完所有的边之后，如果树的边数没有达到n-1，说明错误
+    if (edge_num != n-1) {
+        return -1;
+    }
+    return ans;
+}
+
 int test[10][3] = {{0,1,4}, {0,4,1}, {0,5,2}, {1,2,6}, {1,5,3},
                    {2,3,5}, {2,5,5}, {3,4,4}, {3,5,5}, {4,5,3}};
 
@@ -65,6 +152,8 @@ int main()
     for (int i = 0; i < m; i++) {
         int from = test[i][0], to = test[i][1];
         G[from][to] = G[to][from] = test[i][2];
+        E[i].u = from, E[i].v = to;
+        E[i].cost = test[i][2];
     }
     
     //for (int i = 0; i < m; i++) {
@@ -74,8 +163,27 @@ int main()
     //    printf("\n");
     //}
 
+    printf("----------> PRIM algorithm <------------\n\n");
     int min = prim(start, n);
-    printf("MFS distance is : %d.\n", min);
+    printf("MFS distance is : %d.\n\n", min);
+
+    printf("----------> Kruskal algorithm <-----------\n");
+    printf("---------test find father.\n");
+    int size = 10;
+    set_father(size);
+    print_father(size);
+    for (int i = 1; i < size; i++) {
+        father[i] = i-1; 
+    }
+    print_father(size);
+    find_father(5);
+    print_father(size);
+    printf("---------test edges.\n");
+    p_E(size);
+
+    printf("---------test kruskal.\n");
+    int sum = kruskal(n, m);
+    printf("Kruskal calculated answer is %d.\n", sum);
 
     return 0;
 }
